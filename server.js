@@ -11,7 +11,12 @@ import songsRouter from './routes/songs.js'
 import registerRouter from './routes/register.js'
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({
+    origin: ["https://Alexander-Videv.github.io"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    credentials: true
+}));
+
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST || "localhost",
