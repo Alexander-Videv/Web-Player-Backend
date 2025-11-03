@@ -26,7 +26,7 @@ app.use(cors({
 }));
 
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST || "mysql-yourproject.aivencloud.com",
     user: process.env.DB_USER || "avnadmin",
     password: process.env.DB_PASS || "supersecret",
