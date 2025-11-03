@@ -33,7 +33,7 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME || "defaultdb",
     port: process.env.DB_PORT || 12345,
     ssl: {
-        rejectUnauthorized: true, // Required for Aiven's SSL
+        ca: fs.readFileSync("./ca.pem"),
     },
 });
 
