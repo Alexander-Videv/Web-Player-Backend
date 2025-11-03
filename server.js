@@ -12,7 +12,11 @@ import registerRouter from './routes/register.js'
 
 const app = express();
 app.use(cors({
-    origin: ["https://alexander-videv.github.io"],
+    origin: [
+        "http://localhost:3000",                 // for local testing
+        "https://alexander-videv.github.io",        // your GitHub Pages URL
+        "https://alexander-videv.github.io/web-player" // sometimes needed depending on repo name
+    ],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true
 }));
