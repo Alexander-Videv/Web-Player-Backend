@@ -33,7 +33,8 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME || "defaultdb",
     port: process.env.DB_PORT || 12345,
     ssl: {
-        ca: fs.readFileSync("./ca.pem"),
+        // ca: fs.readFileSync("./ca.pem"),
+        rejectUnauthorized: false,
     },
 });
 
