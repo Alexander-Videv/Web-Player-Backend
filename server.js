@@ -12,7 +12,7 @@ import registerRouter from './routes/register.js'
 
 const app = express();
 app.use(cors({
-    origin: ["https://Alexander-Videv.github.io"],
+    origin: ["https://alexander-videv.github.io"],
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true
 }));
