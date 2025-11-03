@@ -23,10 +23,14 @@ app.use(cors({
 
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASS || "pass",
-    database: process.env.DB_NAME || "web-player",
+    host: process.env.DB_HOST || "mysql-yourproject.aivencloud.com",
+    user: process.env.DB_USER || "avnadmin",
+    password: process.env.DB_PASS || "supersecret",
+    database: process.env.DB_NAME || "defaultdb",
+    port: process.env.DB_PORT || 12345,
+    ssl: {
+        rejectUnauthorized: true, // Required for Aiven's SSL
+    },
 });
 
 
