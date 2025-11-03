@@ -14,11 +14,12 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000" }));
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: 'root',
-    password: 'pass',
-    database: 'web-player'
-})
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASS || "pass",
+    database: process.env.DB_NAME || "web-player",
+});
+
 
 
 if (!fs.existsSync("uploads")) {
@@ -37,9 +38,12 @@ app.use("/", loginRouter)
 app.use("/", registerRouter)
 
 
-app.listen(8081, () => {
-    console.log("listening");
-})
+const PORT = process.env.PORT || 8081;
+
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
+
 
 app.get('/', (req, res) => {
     return res.json("From Backend");
