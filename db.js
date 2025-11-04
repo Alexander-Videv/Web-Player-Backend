@@ -7,7 +7,7 @@ dotenv.config();
 
 // Create a pool of reusable connections
 
-const db = mysql.createPool({
+const pool = mysql.createPool({
     host: process.env.DB_HOST || "mysql-yourproject.aivencloud.com",
     user: process.env.DB_USER || "avnadmin",
     password: process.env.DB_PASS || "supersecret",
