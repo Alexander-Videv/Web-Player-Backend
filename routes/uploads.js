@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import pool from "../db.js";
 import supabase from "../supabase.js";
+import fs from "fs"
 
 const router = express.Router();
 
@@ -31,11 +32,16 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         return res.status(400).json({ error: "Missing username or file" });
     }
 
+    const filePath = file.path; // e.g. uploads/sasho-12345.mp3
+    const supabasePath = `songs/${file.filename}`;
 
     try {
+
+        const fileBuffer = fs.readFileSync(filePath);
+
         const { data, error } = await supabase.storage
             .from(process.env.SUPABASE_BUCKET)
-            .upload(filePath, file.buffer, {
+            .upload(supabasePath, fileBuffer, {
                 contentType: file.mimetype,
                 cacheControl: "3600",
                 upsert: false,
@@ -43,9 +49,13 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
         if (error) throw error;
 
+        fs.unlinkSync(filePath);
+
         const { data: publicUrlData } = supabase.storage
             .from(process.env.SUPABASE_BUCKET)
-            .getPublicUrl(filePath);
+            .getPublicUrl(supabasePath);
+
+        const publicUrl = publicUrlData?.publicUrl || null;
 
         // Find the user
         const [userRows] = await pool.query("SELECT id FROM users WHERE username = ?", [username]);
@@ -84,7 +94,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
         res.json({
             message: "Song uploaded successfully!",
-            file: `/uploads/${req.file.filename}`,
+            file: publicUrl,
             songid,
             playlistid,
         });
