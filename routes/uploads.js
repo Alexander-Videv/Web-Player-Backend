@@ -2,6 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import pool from "../db.js";
+import supabase from "../supabase.js";
 
 const router = express.Router();
 
@@ -24,11 +25,28 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const artist = req.body.artist || null;
     const cover_art = req.body.cover_art || null;
 
-    if (!username || !req.file) {
+    const file = req.file;
+
+    if (!username || !file) {
         return res.status(400).json({ error: "Missing username or file" });
     }
 
+
     try {
+        const { data, error } = await supabase.storage
+            .from(process.env.SUPABASE_BUCKET)
+            .upload(filePath, file.buffer, {
+                contentType: file.mimetype,
+                cacheControl: "3600",
+                upsert: false,
+            });
+
+        if (error) throw error;
+
+        const { data: publicUrlData } = supabase.storage
+            .from(process.env.SUPABASE_BUCKET)
+            .getPublicUrl(filePath);
+
         // Find the user
         const [userRows] = await pool.query("SELECT id FROM users WHERE username = ?", [username]);
         if (userRows.length === 0) return res.status(404).json({ error: "User not found" });
