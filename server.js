@@ -10,6 +10,7 @@ import songsRouter from './routes/songs.js'
 import registerRouter from './routes/register.js'
 
 import pool from './db.js';
+import supabase from './supabase.js';
 
 const app = express();
 app.use(cors({
@@ -28,6 +29,8 @@ if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
     console.log("Created uploads folder");
 }
+
+app.use(supabase);
 
 app.use(express.json())
 app.use('/uploads', express.static('uploads'));
