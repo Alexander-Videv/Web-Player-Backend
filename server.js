@@ -1,6 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import mysql from 'mysql2'
 import fs from "fs";
 
 import playlistRoute from './routes/playlists.js'
@@ -10,9 +9,7 @@ import currentPlaylist from './routes/current-playlist.js'
 import songsRouter from './routes/songs.js'
 import registerRouter from './routes/register.js'
 
-import dotenv from "dotenv";
-
-dotenv.config();
+import pool from './db.js';
 
 const app = express();
 app.use(cors({
@@ -26,25 +23,11 @@ app.use(cors({
 }));
 
 
-const db = mysql.createPool({
-    host: process.env.DB_HOST || "mysql-yourproject.aivencloud.com",
-    user: process.env.DB_USER || "avnadmin",
-    password: process.env.DB_PASS || "supersecret",
-    database: process.env.DB_NAME || "defaultdb",
-    port: process.env.DB_PORT || 12345,
-    ssl: {
-        ca: fs.readFileSync("./ca.pem"),
-        // rejectUnauthorized: false,
-    },
-});
-
-
 
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads");
     console.log("Created uploads folder");
 }
-
 
 app.use(express.json())
 app.use('/uploads', express.static('uploads'));
@@ -55,22 +38,22 @@ app.use("/", songsRouter)
 app.use("/", loginRouter)
 app.use("/", registerRouter)
 
+app.get('/', (req, res) => {
+    return res.json("From Backend");
+})
+
+app.get("/users", async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT * FROM users");
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "DB error" });
+    }
+});
 
 const PORT = process.env.PORT || 8081;
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 });
-
-
-app.get('/', (req, res) => {
-    return res.json("From Backend");
-})
-
-app.get('/users', (req, res) => {
-    const sql = "SELECT * FROM users";
-    db.query(sql, (err, data) => {
-        if (err) return res.json(err);
-        return res.json(data);
-    })
-})

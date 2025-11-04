@@ -32,7 +32,9 @@ router.post("/register", async (req, res) => {
         const [user] = await pool.query("SELECT * FROM users WHERE username = ?", [username]);
         await pool.query("INSERT INTO playlists (userid, name) VALUES (?, ?)", [user[0].id, "My Songs"]);
 
+        console.log("User created", username);
         res.status(201).json({ message: "User created successfully" });
+
     } catch (err) {
         console.error("Register error:", err);
         res.status(500).json({ error: "Server error" });
