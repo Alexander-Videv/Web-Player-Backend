@@ -30,8 +30,6 @@ if (!fs.existsSync("uploads")) {
     console.log("Created uploads folder");
 }
 
-app.use(supabase);
-
 app.use(express.json())
 app.use('/uploads', express.static('uploads'));
 app.use("/", uploadRouter)
