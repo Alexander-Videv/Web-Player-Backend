@@ -33,8 +33,8 @@ const db = mysql.createPool({
     database: process.env.DB_NAME || "defaultdb",
     port: process.env.DB_PORT || 12345,
     ssl: {
-        // ca: fs.readFileSync("./ca.pem"),
-        rejectUnauthorized: false,
+        ca: fs.readFileSync("./ca.pem"),
+        // rejectUnauthorized: false,
     },
 });
 
