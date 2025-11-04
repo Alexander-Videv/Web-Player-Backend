@@ -65,7 +65,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         // Insert the song
         const [songResult] = await pool.query(
             "INSERT INTO songs (userid, title, file_path, artist, cover_art) VALUES (?, ?, ?, ?,?)",
-            [userid, title, `/uploads/${req.file.filename}`, artist, cover_art]
+            [userid, title, supabasePath, artist, cover_art]
         );
         const songid = songResult.insertId;
 
